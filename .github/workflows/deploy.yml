@@ -1,0 +1,32 @@
+name: deploy JobMatch to Azure
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  build-and-deploy:
+    runs-on: ubuntu-latest
+    steps:
+    #1. Hämta koden
+    - uses: actions/checkout@v4
+
+    #2. Installera .Net 9
+    - name: Setup .Net
+      uses: actions/setup-dotnet@v4
+      with:
+        dotnet-version: '9.0.x'
+    
+    #3. Bygg appen
+    - name: Build
+      run: dotnet publish JobMatch.API/JobMatch.API.csproj -c Release -o ./publish
+
+    #4. Deploy till Azure
+    - name: Deploy
+      uses: azure/webapps-deploy@v3
+      with:
+        app-name: jobmatch-api-2026
+        publish-profile: ${{ secrets.AZURE_WEBAPP_PUBLISH_PROFILE }}
+        package: ./publish
+
+
