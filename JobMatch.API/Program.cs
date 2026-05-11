@@ -11,7 +11,15 @@ builder.Services.AddControllers();
 // Swagger — skapar en test-sida för vårt API
 builder.Services.AddSwaggerGen();
 // EF Core — kopplar vår DbContext till SQLite (för lokal utveckling)
-builder.Services.AddDbContext<AppDbContext>(options => options.UseSqlite("Data Source=JobMatch.db"));
+builder.Services.AddDbContext<AppDbContext>(options =>
+{
+    if (builder.Environment.IsDevelopment())
+        //Lokalt
+        options.UseSqlite("Data Source=JobMatch.db");
+    else
+        //Azure: 
+        options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection"));
+});
 
 var app = builder.Build();
 

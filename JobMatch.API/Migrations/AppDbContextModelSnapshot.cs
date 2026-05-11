@@ -2,6 +2,7 @@
 using JobMatch.API.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Metadata;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -14,25 +15,31 @@ namespace JobMatch.API.Migrations
         protected override void BuildModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
-            modelBuilder.HasAnnotation("ProductVersion", "9.0.0");
+            modelBuilder
+                .HasAnnotation("ProductVersion", "9.0.0")
+                .HasAnnotation("Relational:MaxIdentifierLength", 128);
+
+            SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder);
 
             modelBuilder.Entity("JobMatch.API.Models.Job", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("INTEGER");
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
                     b.Property<string>("CompanyName")
                         .IsRequired()
-                        .HasColumnType("TEXT");
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("JobName")
                         .IsRequired()
-                        .HasColumnType("TEXT");
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("Skills")
                         .IsRequired()
-                        .HasColumnType("TEXT");
+                        .HasColumnType("nvarchar(max)");
 
                     b.HasKey("Id");
 
@@ -43,19 +50,21 @@ namespace JobMatch.API.Migrations
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("INTEGER");
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
                     b.Property<string>("Email")
                         .IsRequired()
-                        .HasColumnType("TEXT");
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("FullName")
                         .IsRequired()
-                        .HasColumnType("TEXT");
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("Skills")
                         .IsRequired()
-                        .HasColumnType("TEXT");
+                        .HasColumnType("nvarchar(max)");
 
                     b.HasKey("Id");
 
@@ -66,16 +75,18 @@ namespace JobMatch.API.Migrations
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("INTEGER");
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
                     b.Property<int>("JobId")
-                        .HasColumnType("INTEGER");
+                        .HasColumnType("int");
 
                     b.Property<int>("JobSeekerId")
-                        .HasColumnType("INTEGER");
+                        .HasColumnType("int");
 
                     b.Property<int>("MatchPercent")
-                        .HasColumnType("INTEGER");
+                        .HasColumnType("int");
 
                     b.HasKey("Id");
 
