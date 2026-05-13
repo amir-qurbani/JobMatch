@@ -1,8 +1,11 @@
 using System.ComponentModel.DataAnnotations;
+using System.IdentityModel.Tokens.Jwt;
+using System.Text;
 using JobMatch.API.Data;
 using JobMatch.API.Models;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.IdentityModel.Tokens;
 
 namespace JobMatch.API.Controllers
 {
@@ -43,8 +46,19 @@ namespace JobMatch.API.Controllers
             var passwordValid = BCrypt.Net.BCrypt.Verify(dto.Password, user.PasswordHash);
             if (!passwordValid)
                 return Unauthorized("Fel email eller lösenord");
+            var key = new SymmetricSecurityKey(
+                 Encoding.UTF8.GetBytes("din-hemliga-nyckel-minst-32-tecken!!"));
 
-            return Ok("Inloggning lyckades!");  // ← LÄGG TILL DENNA
+            var credentials = new SigningCredentials(key, SecurityAlgorithms.HmacSha256);
+
+            var token = new JwtSecurityToken(
+                expires: DateTime.Now.AddDays(1),  // token giltig i 1 dag
+                signingCredentials: credentials
+            );
+
+            var tokenString = new JwtSecurityTokenHandler().WriteToken(token);
+
+            return Ok(new { token = tokenString });
         }
     }
 
