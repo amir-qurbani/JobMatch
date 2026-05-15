@@ -21,7 +21,11 @@ jobs:
     - name: Build
       run: dotnet publish JobMatch.API/JobMatch.API.csproj -c Release -o ./publish
 
-    #4. Deploy till Azure
+    #4. Debug - lista publish-filer
+    - name: Debug Publish Output
+      run: ls -la ./publish/
+
+    #5. Deploy till Azure
     - name: Deploy
       uses: azure/webapps-deploy@v3
       with:
