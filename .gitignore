@@ -501,4 +501,9 @@ appsettings.*.json
 .terraform/
 *.tfstate
 *.tfstate.backup
+
+# Azure publish profiles contain deployment credentials
 publish-profile.xml
+publish-profile.xmlgit
+*.publishsettings
+*.PublishSettings
