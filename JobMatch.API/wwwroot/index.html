@@ -72,45 +72,74 @@
         <p id="result"></p>
     </form>
     <script>
-        const API = window.location.origin;
+        const API = window.location.protocol === 'file:'
+            ? 'https://jobmatch-api-tf.azurewebsites.net'
+            : window.location.origin;
+
+        async function requestJson(url, options) {
+            const response = await fetch(url, options);
+            const text = await response.text();
+            let data = null;
+
+            try {
+                data = text ? JSON.parse(text) : null;
+            } catch {
+                data = text;
+            }
+
+            if (!response.ok) {
+                throw new Error(typeof data === 'string' ? data : `HTTP ${response.status}`);
+            }
+
+            return data;
+        }
 
         async function createJobSeeker() {
-            const response = await fetch(`${API}/api/jobseeker`, {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({
-                    fullName: document.getElementById('fullName').value,
-                    email: document.getElementById('email').value,
-                    skills: document.getElementById('seekerSkills').value
-                })
-            });
-            const data = await response.json();
-            document.getElementById('seekerResult').innerText = `Skapad! ID: ${data.id}`;
+            try {
+                const data = await requestJson(`${API}/api/jobseeker`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        fullName: document.getElementById('fullName').value,
+                        email: document.getElementById('email').value,
+                        skills: document.getElementById('seekerSkills').value
+                    })
+                });
+                document.getElementById('seekerResult').innerText = `Skapad! ID: ${data.id}`;
+            } catch (error) {
+                document.getElementById('seekerResult').innerText = `Fel: ${error.message}`;
+            }
         }
 
         async function createJob() {
-            const response = await fetch(`${API}/api/job`, {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({
-                    jobName: document.getElementById('jobName').value,
-                    companyName: document.getElementById('companyName').value,
-                    skills: document.getElementById('jobSkills').value
-                })
-            });
-            const data = await response.json();
-            document.getElementById('jobResult').innerText = `Skapat! ID: ${data.id}`;
+            try {
+                const data = await requestJson(`${API}/api/job`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        jobName: document.getElementById('jobName').value,
+                        companyName: document.getElementById('companyName').value,
+                        skills: document.getElementById('jobSkills').value
+                    })
+                });
+                document.getElementById('jobResult').innerText = `Skapat! ID: ${data.id}`;
+            } catch (error) {
+                document.getElementById('jobResult').innerText = `Fel: ${error.message}`;
+            }
         }
 
         async function calculateMatch() {
             const seekerId = document.getElementById('jobSeekerId').value;
             const jobId = document.getElementById('jobId').value;
 
-            const response = await fetch(`${API}/api/match/calculate/${seekerId}/${jobId}`, {
-                method: 'POST'
-            });
-            const data = await response.json();
-            document.getElementById('result').innerText = `Match: ${data.matchPercent}%`;
+            try {
+                const data = await requestJson(`${API}/api/match/calculate/${seekerId}/${jobId}`, {
+                    method: 'POST'
+                });
+                document.getElementById('result').innerText = `Match: ${data.matchPercent}%`;
+            } catch (error) {
+                document.getElementById('result').innerText = `Fel: ${error.message}`;
+            }
         }
     </script>
 </body>

@@ -2,12 +2,9 @@ using Microsoft.AspNetCore.Mvc;
 using JobMatch.API.Data;
 using Microsoft.EntityFrameworkCore;
 using JobMatch.API.Models;
-using Microsoft.AspNetCore.Authentication;
-using Microsoft.AspNetCore.Authorization;
 
 namespace JobMatch.API.Controllers
 {
-    [Authorize]
     [ApiController]
     [Route("api/[controller]")]
     public class JobSeekerController : ControllerBase
