@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html lang="sv">
+
+<head>
+    <meta charset="UTF-8">
+    <title>JobMatch</title>
+    <style>
+        body {
+            font-family: Arial;
+            max-width: 800px;
+            margin: 40px auto;
+            padding: 0 20px;
+        }
+
+        h1 {
+            color: #333;
+        }
+
+        form {
+            margin-bottom: 30px;
+            border: 1px solid #ddd;
+            padding: 20px;
+            border-radius: 8px;
+        }
+
+        input {
+            display: block;
+            margin: 8px 0;
+            padding: 8px;
+            width: 100%;
+        }
+
+        button {
+            background: #0078d4;
+            color: white;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+
+        #result {
+            margin-top: 20px;
+            font-size: 24px;
+            font-weight: bold;
+        }
+    </style>
+</head>
+
+<body>
+    <form id="jobSeekerForm">
+        <h2>Skapa Jobbsokare</h2>
+        <input type="text" id="fullName" placeholder="Namn" />
+        <input type="email" id="email" placeholder="Email" />
+        <input type="text" id="seekerSkills" placeholder="Skills (t.ex. C#, Azure, SQL)" />
+        <button type="button" onclick="createJobSeeker()">Skapa</button>
+        <p id="seekerResult"></p>
+    </form>
+    <form id="jobForm">
+        <h2>Skapa Jobb</h2>
+        <input type="text" id="jobName" placeholder="Jobbtitel" />
+        <input type="text" id="companyName" placeholder="Foretag" />
+        <input type="text" id="jobSkills" placeholder="Skills (t.ex. C#, Azure, Docker)" />
+        <button type="button" onclick="createJob()">Skapa</button>
+        <p id="jobResult"></p>
+    </form>
+    <form id="matchForm">
+        <h2>Matcha</h2>
+        <input type="number" id="jobSeekerId" placeholder="Jobbsokar-ID" />
+        <input type="number" id="jobId" placeholder="Jobb-ID" />
+        <button type="button" onclick="calculateMatch()">Matcha!</button>
+        <p id="result"></p>
+    </form>
+    <script>
+        const API = window.location.origin;
+
+        async function createJobSeeker() {
+            const response = await fetch(`${API}/api/jobseeker`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                    fullName: document.getElementById('fullName').value,
+                    email: document.getElementById('email').value,
+                    skills: document.getElementById('seekerSkills').value
+                })
+            });
+            const data = await response.json();
+            document.getElementById('seekerResult').innerText = `Skapad! ID: ${data.id}`;
+        }
+
+        async function createJob() {
+            const response = await fetch(`${API}/api/job`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                    jobName: document.getElementById('jobName').value,
+                    companyName: document.getElementById('companyName').value,
+                    skills: document.getElementById('jobSkills').value
+                })
+            });
+            const data = await response.json();
+            document.getElementById('jobResult').innerText = `Skapat! ID: ${data.id}`;
+        }
+
+        async function calculateMatch() {
+            const seekerId = document.getElementById('jobSeekerId').value;
+            const jobId = document.getElementById('jobId').value;
+
+            const response = await fetch(`${API}/api/match/calculate/${seekerId}/${jobId}`, {
+                method: 'POST'
+            });
+            const data = await response.json();
+            document.getElementById('result').innerText = `Match: ${data.matchPercent}%`;
+        }
+    </script>
+</body>
+
+</html>
