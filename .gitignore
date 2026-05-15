@@ -497,6 +497,7 @@ $RECYCLE.BIN/
 # Vim temporary swap files
 *.swp
 appsettings.json
+appsettings.*.json
 .terraform/
 *.tfstate
 *.tfstate.backup
