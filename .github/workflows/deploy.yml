@@ -19,7 +19,9 @@ jobs:
     
     #3. Bygg appen
     - name: Build
-      run: dotnet publish JobMatch.API/JobMatch.API.csproj -c Release -o ./publish
+      run: |
+        dotnet publish JobMatch.API/JobMatch.API.csproj -f net8.0 -c Release -o ./publish
+        grep -q '"tfm": "net8.0"' ./publish/JobMatch.API.runtimeconfig.json
 
     #4. Deploy till Azure
     - name: Deploy
