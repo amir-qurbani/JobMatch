@@ -1,12 +1,9 @@
 using System.Text;
 using JobMatch.API.Data;
-using Microsoft.AspNetCore.Routing.Tree;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.OpenApi.Models;
-using System.ComponentModel;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -56,12 +53,16 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
 // EF Core — kopplar vår DbContext till SQLite (för lokal utveckling)
 builder.Services.AddDbContext<AppDbContext>(options =>
 {
-    if (builder.Environment.IsDevelopment())
-        //Lokalt
+    var connectionString = builder.Configuration.GetConnectionString("DefaultConnection");
+
+    if (builder.Environment.IsDevelopment() || string.IsNullOrWhiteSpace(connectionString))
+    {
         options.UseSqlite("Data Source=JobMatch.db");
+    }
     else
-        //Azure: 
-        options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection"));
+    {
+        options.UseSqlServer(connectionString);
+    }
 });
 
 var app = builder.Build();
@@ -77,6 +78,8 @@ app.UseAuthentication();
 app.UseAuthorization();
 app.UseSwagger();
 app.UseSwaggerUI();
+app.MapGet("/", () => Results.Redirect("/swagger"));
+app.MapGet("/health", () => Results.Ok(new { status = "ok" }));
 app.MapControllers();
 
 app.Run();
