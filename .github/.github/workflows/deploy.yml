@@ -25,6 +25,6 @@ jobs:
     - name: Deploy
       uses: azure/webapps-deploy@v3
       with:
-        app-name: jobmatch-api-2026
-        publish-profile: ${{ secrets.AZURE_WEBAPP_PUBLISH_PROFILE }}
+        app-name: jobmatch-api-tf
+        publish-profile: ${{ secrets.AZURE_WEBAPP_PUBLISH_PROFILE_TF }}
         package: ./publish

@@ -448,6 +448,20 @@ Icon
 .VolumeIcon.icns
 .com.apple.timemachine.donotpresent
 
+# Terraform
+.terraform/
+*.tfstate
+*.tfstate.*
+*.tfvars
+.terraformrc
+terraform.rc
+crash.log
+crash.*.log
+override.tf
+override.tf.json
+*_override.tf
+*_override.tf.json
+
 # Directories potentially created on remote AFP share
 .AppleDB
 .AppleDesktop
@@ -483,3 +497,7 @@ $RECYCLE.BIN/
 # Vim temporary swap files
 *.swp
 appsettings.json
+.terraform/
+*.tfstate
+*.tfstate.backup
+publish-profile.xml
