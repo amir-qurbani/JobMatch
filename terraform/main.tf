@@ -51,7 +51,7 @@ resource "azurerm_linux_web_app" "main"{
     site_config{
         always_on = false
         application_stack {
-            dotnet_version = "8.0"
+            dotnet_version = "9.0"
         }
     }
     connection_string {
