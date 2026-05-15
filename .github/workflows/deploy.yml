@@ -11,11 +11,11 @@ jobs:
     #1. Hämta koden
     - uses: actions/checkout@v4
 
-    #2. Installera .Net 9
+    #2. Installera .Net 8
     - name: Setup .Net
       uses: actions/setup-dotnet@v4
       with:
-        dotnet-version: '9.0.x'
+        dotnet-version: '8.0.x'
     
     #3. Bygg appen
     - name: Build
